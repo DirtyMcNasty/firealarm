@@ -15,7 +15,7 @@ def main():
 
 	EmailClient.onSend(onEmailSend)
 	user="vodstvo1@paytech.com";
-	
+
 	pinMode(0, INPUT)
 	pinMode(1, OUT)
 	pinMode(2, OUT)
@@ -23,18 +23,17 @@ def main():
 	print("Fire Detection")
 	monitor = 0;
 	while True:
-	    newValue = digitalRead(0);
-		shouldNotify = monitor != newValue;
-		monitor = newValue;
-		print("Detection", monitor);
-		if (monitor>=1):
+		newValue = digitalRead(0);
+		print("Detection", newValue);
+		if (newValue>=1):
 			customWrite(1, '1');
 			digitalWrite(2, HIGH);
 			customWrite(3,"FIRE");
 			customWrite(4, '1');
-			if (shouldNotify):
-			    EmailClient.send(user, "Fire", "Fire alarm");
+			if (newValue!=monitor):
+				EmailClient.send(user, "Fire", "Fire alarm");
 			print ("FIRE");
+			monitor = newValue;
 			delay(1000);
 		else:
 			customWrite(1, '0');
@@ -42,7 +41,8 @@ def main():
 			customWrite(3,"STATUS: OK");
 			customWrite(4, '0');
 			print ("STATUS OK");
+			monitor = newValue;
 			delay(1000)
-	
+
 if __name__ == "__main__":
 	main()
