@@ -21,15 +21,19 @@ def main():
 	pinMode(2, OUT)
 	pinMode(3, OUT)
 	print("Fire Detection")
+	monitor = 0;
 	while True:
-		monitor = digitalRead(0);
+	    newValue = digitalRead(0);
+		shouldNotify = monitor != newValue;
+		monitor = newValue;
 		print("Detection", monitor);
 		if (monitor>=1):
 			customWrite(1, '1');
 			digitalWrite(2, HIGH);
 			customWrite(3,"FIRE");
 			customWrite(4, '1');
-			EmailClient.send(user, "Fire", "Fire alarm");
+			if (shouldNotify):
+			    EmailClient.send(user, "Fire", "Fire alarm");
 			print ("FIRE");
 			delay(1000);
 		else:
